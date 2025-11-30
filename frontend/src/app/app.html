@@ -1,0 +1,109 @@
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <h1>Mes Tâches</h1>
+    <button mat-icon-button (click)="toggleTheme()">
+      <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+  </header>
+
+  <!-- Ajout -->
+  <section class="add-todo">
+    <input #input type="text" placeholder="Nouvelle tâche..." (keyup.enter)="addTodo(input.value); input.value=''">
+    <button mat-mini-fab color="primary" (click)="addTodo(input.value); input.value=''">
+      <mat-icon>add</mat-icon>
+    </button>
+  </section>
+
+  <!-- Chargement -->
+  @if (isLoading()) {
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  }
+
+  
+  @else {
+    <div class="lists-container">
+      
+     
+      <section class="list" 
+               cdkDropList 
+               [cdkDropListData]="getTodosByStatus('todo')"
+               (cdkDropListDropped)="drop($event)" 
+               data-status="todo">
+        <h3> À Faire</h3>
+        <div class="todos">
+          @for (todo of getTodosByStatus('todo'); track todo.id) {
+            <article class="todo-item" cdkDrag [cdkDragData]="todo">
+              <label class="checkbox">
+                <input type="checkbox" [checked]="todo.completed" (change)="toggle(todo)">
+                <span class="checkmark"></span>
+              </label>
+              <span [class.completed]="todo.completed">{{ todo.title }}</span>
+              <button mat-icon-button color="warn" (click)="delete(todo.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </article>
+          }
+        </div>
+      </section>
+
+      
+      <section class="list" 
+               cdkDropList 
+               [cdkDropListData]="getTodosByStatus('working')"
+               (cdkDropListDropped)="drop($event)" 
+               data-status="working">
+        <h3> En Cours</h3>
+        <div class="todos">
+          @for (todo of getTodosByStatus('working'); track todo.id) {
+            <article class="todo-item" cdkDrag [cdkDragData]="todo">
+              <label class="checkbox">
+                <input type="checkbox" [checked]="todo.completed" (change)="toggle(todo)">
+                <span class="checkmark"></span>
+              </label>
+              <span [class.completed]="todo.completed">{{ todo.title }}</span>
+              <button mat-icon-button color="warn" (click)="delete(todo.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </article>
+          }
+        </div>
+      </section>
+
+      
+      <section class="list" 
+               cdkDropList 
+               [cdkDropListData]="getTodosByStatus('done')"
+               (cdkDropListDropped)="drop($event)" 
+               data-status="done">
+        <h3> Terminé</h3>
+        <div class="todos">
+          @for (todo of getTodosByStatus('done'); track todo.id) {
+            <article class="todo-item" cdkDrag [cdkDragData]="todo">
+              <label class="checkbox">
+                <input type="checkbox" [checked]="todo.completed" (change)="toggle(todo)">
+                <span class="checkmark"></span>
+              </label>
+              <span [class.completed]="todo.completed">{{ todo.title }}</span>
+              <button mat-icon-button color="warn" (click)="delete(todo.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </article>
+          }
+        </div>
+      </section>
+
+    </div>
+
+  
+    @if (todos().length === 0) {
+      <div class="empty">
+        <mat-icon>check_circle</mat-icon>
+        <p>Aucune tâche ! Profite</p>
+      </div>
+    }
+  }
+</div>
